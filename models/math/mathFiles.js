@@ -74,7 +74,10 @@ const FileSchema = mongoose.Schema({
         commentBy: {
             type: String
         }
-    }]
+    }],
+    approved: {
+      type: String
+    }
 })
 
 module.exports = mongoose.model('File', FileSchema)

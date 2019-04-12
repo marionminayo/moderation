@@ -47,7 +47,7 @@ module.exports.deleteCoder = function (req, res) {
 
 //update user
 module.exports.updateCoder = function (req, res) {
-    Coder.findByIdAndUpdate(req.params.id, {$set: req.body}, function (err, coder) {
+    Coder.findByIdAndUpdate(req.params.id, {$set: req.body}, function (err, user) {
         if (err) return next(err);
         res.send('User udpated.');
     });

@@ -23,31 +23,31 @@ router.post('/register', (req, res, next)=>{
 })
 
 router.get('/profile', passport.authenticate('jwt', {session : false}), (req, res, next)=>{
-    res.json({coder : req.coder})
+    res.json({user : req.user})
 })
 
 router.post('/authenticate', (req, res, next)=>{
     const name = req.body.name
     const password = req.body.password
 
-    Coder.getCoderByName(name, (err, coder)=>{
+    Coder.getCoderByName(name, (err, user)=>{
         if(err) throw err
-        if(!coder){
+        if(!user){
             return res.json({success : false, msg : 'Coder not found'})
         }
-        Coder.comparePassword(password, coder.password,(err, isMatch)=>{
+        Coder.comparePassword(password, user.password,(err, isMatch)=>{
             if(err) throw err
             if(isMatch){
-                const token = jwt.sign(coder.toJSON(), config.secret,{
+                const token = jwt.sign(user.toJSON(), config.secret,{
                     expiresIn : 31556926// an year
                 })
                 res.json({
                     success : true,
                     token : 'jwt ' +token,
-                    coder : {
-                        id : coder._id,
-                        name : coder.name,
-                        email : coder.email
+                    user : {
+                        id : user._id,
+                        name : user.name,
+                        email : user.email
                     }
                 })
             }else{

@@ -196,25 +196,44 @@ router.post('/comment', (req,res)=>{
           if(!file){
             res.json({success: false, message: 'File not found.'})
           }else{
-            User.findOne({_id: req.decoded.userId}, (err, user)=>{
+            file.comments.push({
+              comment: req.body.comment,
+              commentBy: req.body.commentBy
+            })
+            file.save((err)=>{
               if(err){
-                res.json({success: false, message: err})
+                res.json({success: false, message: 'Something went wrong.'})
               }else{
-                if(!user){
-                  res.json({success: false, message: 'User not found.'})
-                }else{
-                  file.comments.push({
-                    comment: req.body.comment,
-                    commentBy: user.username
-                  })
-                  file.save((err)=>{
-                    if(err){
-                      res.json({success: false, message: 'Something went wrong.'})
-                    }else{
-                      res.json({success: true, message: 'Comment saved.'})
-                    }
-                  })
-                }
+                res.json({success: true, message: 'Comment saved.'})
+              }
+            })
+          }
+        }
+      })
+    }
+  }
+})
+
+router.post('/approve',(req, res)=>{
+  if(!req.body.approved){
+    res.json({success: false, message: 'No comment was provided'})
+  }else{
+    if(!req.body.id){
+      res.json({success: false, message: 'No id was provided'})
+    }else{
+      File.findOne({_id : req.body.id}, (err, file)=>{
+        if(err){
+          res.json({success: false, message: 'Invalid id was provided.'})
+        }else{
+          if(!file){
+            res.json({success: false, message: 'File not found.'})
+          }else{
+            file.approved = req.body.approved
+            file.save((err)=>{
+              if(err){
+                res.json({success: false, message: 'Something went wrong.'})
+              }else{
+                res.json({success: true, message: 'Approved.'})
               }
             })
           }
